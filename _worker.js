@@ -449,6 +449,12 @@ async function getUrl(request, targetUrl, 追加UA, userAgentHeader) {
 	const newHeaders = new Headers(request.headers);
 	const fakeUA = 追加UA.toLowerCase().includes('clash') ? 'clash-verge/v2.4.5' : `${atob('djJyYXlOLzYuNDU=')} cmliu/CF-Workers-SUB ${追加UA}(${userAgentHeader})`;
 	newHeaders.set("User-Agent", fakeUA);
+	if (!newHeaders.get("Referer")) {
+		try {
+			const targetUrlObj = new URL(targetUrl);
+			newHeaders.set("Referer", `${targetUrlObj.protocol}//${targetUrlObj.hostname}/`);
+		} catch(e) {}
+	}
 
 	// 构建新的请求对象
 	const modifiedRequest = new Request(targetUrl, {
